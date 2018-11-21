@@ -1,0 +1,25 @@
+function Slot-Restart 
+{
+    param(  
+        [Parameter(Mandatory)]
+        [string] $ResourceGroup,
+        [string] $WebappName,
+        [string] $SlotName 
+    )
+    #Restart Slot
+    for($tryIndex=0; $tryIndex -le 10; $tryIndex++){  
+        try{
+            $result=Stop-AzureRmWebAppSlot -ResourceGroupName $ResourceGroup -Name $WebappName -Slot $SlotName
+            Write-Host "Slot Status : "
+            $result.State
+            $result=Start-AzureRmWebAppSlot -ResourceGroupName $ResourceGroup -Name $WebappName -Slot $SlotName
+            Write-Host "Slot Status : "
+            $result.State
+            break;
+        }
+        catch{
+            Write-Host "Sleep & repeat"
+            Start-Sleep -s 1
+        }
+    }
+}
