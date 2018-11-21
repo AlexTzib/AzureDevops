@@ -1,3 +1,5 @@
+#Usage :
+#Slot-Restart $ResourceGroupName  $WebappName $SlotName
 function Slot-Restart 
 {
     param(  
