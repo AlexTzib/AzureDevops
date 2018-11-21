@@ -1,5 +1,6 @@
 #Usage :
 #Slot-Restart $ResourceGroupName  $WebappName $SlotName
+#Description : Function to restart Webapp slot , Prevent Locks .
 function Slot-Restart 
 {
     param(  
