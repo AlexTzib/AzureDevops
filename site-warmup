@@ -1,0 +1,35 @@
+#Usage:
+# Site-warmup www.google.com \,main
+#Description : Site warm up ( brown to the site with retry ) 
+#inspired by some blog will find it and give credit . 
+
+function site-warmup 
+{
+    param(  
+        [Parameter(Mandatory)]
+        [string] $rootUrl,
+        [string[]] $suffixes
+        #$suffixes = @("/", "/", "/")
+    )
+    #Make sure that website is alive
+    for($tryIndex=0; $tryIndex -le 10; $tryIndex++){  
+        try{
+            $time =  Measure-Command{Invoke-WebRequest $rootUrl -UseBasicParsing -ErrorAction Stop -ErrorVariable siteIsNotAlive}
+            $response = Invoke-WebRequest $rootUrl
+            Write-Host "Site Online"
+            Write-Host "$rootUrl responded in $($time.TotalSeconds) with response code $($response.StatusCode)"
+            break;
+        }
+        catch{
+            Write-Host "Sleep & repeat"
+            Start-Sleep -s 1
+        }
+    }
+    #url suffixes testing
+    $suffixes | ForEach-Object{
+        $url = $rootUrl+$_;
+        $time = Measure-Command{Invoke-WebRequest $url -UseBasicParsing}
+        $response = Invoke-WebRequest $url
+        Write-Host "$url responded in $($time.TotalSeconds) with response code $($response.StatusCode)"
+    }
+}
